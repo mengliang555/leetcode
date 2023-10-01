@@ -2,7 +2,7 @@
 ## English
 ### pronounce
 ### vocabulary
-### grammer
+### grammar
 ---
 ## middleware
 - usage -> principle
@@ -12,11 +12,11 @@
 ### ElasticSearch
 ---
 ## Data Struct and Algorithm
-### LeetCode
+### Leet-Code
 ---
 ## Distributed Systems
 ### Distributed Database
-### Raft protocofl
+### Raft protocol
 ### K8s/docker
 ---
 ## Computer Network

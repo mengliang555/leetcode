@@ -263,7 +263,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 }
 
 func isValid(s string) bool {
-	val := make([]rune, 0, 0)
+	val := make([]rune, 0)
 	for _, v := range s {
 
 		switch v {
