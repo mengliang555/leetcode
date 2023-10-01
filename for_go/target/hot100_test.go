@@ -64,3 +64,7 @@ func Test_Function(t *testing.T) {
 	}
 	fmt.Printf("val: %v\n", val)
 }
+
+func Test_reverseWords(t *testing.T) {
+	println(reverseWords("Let's take LeetCode contest"))
+}

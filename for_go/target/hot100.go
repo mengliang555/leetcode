@@ -3,6 +3,7 @@ package target
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 func twoSum(nums []int, target int) []int {
@@ -110,7 +111,6 @@ func MinInt(a, b int) int {
 	return b
 }
 
-// fdjlbcba
 func lengthOfLongestSubstring(s string) int {
 	val := new([128]int)
 
@@ -290,4 +290,25 @@ func isValid(s string) bool {
 		}
 	}
 	return len(val) == 0
+}
+
+func reverseWords(s string) string {
+	eachWord := strings.Split(s, " ")
+
+	reverseStr := func(str string) string {
+		if len(str) <= 1 {
+			return str
+		}
+
+		data := []byte(str)
+		for i := 0; i < len(str)/2; i++ {
+			data[i], data[len(str)-1-i] = data[len(str)-1-i], data[i]
+		}
+		return string(data)
+	}
+
+	for i := range eachWord {
+		eachWord[i] = reverseStr(eachWord[i])
+	}
+	return strings.Join(eachWord, " ")
 }
