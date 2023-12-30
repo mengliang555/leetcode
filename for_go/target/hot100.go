@@ -312,3 +312,12 @@ func reverseWords(s string) string {
 	}
 	return strings.Join(eachWord, " ")
 }
+
+func winnerOfGame(colors string) bool {
+	return false
+}
+
+//
+//func wordBreak(s string, wordDict []string) bool {
+//
+//}

@@ -43,6 +43,24 @@ func climbStairs2(n int) int {
 	return val[n]
 }
 
+func makeEqual(words []string) bool {
+	charCount := make(map[rune]int)
+
+	for _, word := range words {
+		for _, character := range word {
+			charCount[character]++
+		}
+	}
+
+	for _, count := range charCount {
+		if count%len(words) != 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
 //
 //
 //1 2 3 5 8
