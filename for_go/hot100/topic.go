@@ -141,6 +141,7 @@ func threeSum(nums []int) [][]int {
 					break
 				}
 				if middle-1 > left && nums[middle-1] == nums[middle] {
+					middle--
 					continue
 				}
 				middle--
@@ -152,6 +153,7 @@ func threeSum(nums []int) [][]int {
 					break
 				}
 				if middle+1 < right && nums[middle+1] == nums[middle] {
+					middle++
 					continue
 				}
 				middle++
@@ -170,6 +172,127 @@ func threeSum(nums []int) [][]int {
 			left += 1
 		}
 
+	}
+	return ans
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func buildListNode(nums []int) *ListNode {
+	root := &ListNode{}
+	temp := root
+	for _, v := range nums {
+		temp.Next = &ListNode{Val: v}
+		temp = temp.Next
+	}
+	return root.Next
+}
+
+func PrintListNode(root *ListNode) {
+	nums := make([]int, 0)
+	for root != nil {
+		nums = append(nums, root.Val)
+		root = root.Next
+	}
+	fmt.Printf("%+v\n", nums)
+}
+
+func removeNodes(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+
+	replaceNode := func(root, targetNode *ListNode) *ListNode {
+		temp := root
+		if targetNode.Val > temp.Val {
+			return targetNode
+		}
+		for temp.Next != nil {
+			if temp.Next.Val < targetNode.Val {
+				temp.Next = targetNode
+				return root
+			}
+			temp = temp.Next
+		}
+		temp.Next = targetNode
+		return root
+	}
+	root := head
+	lastNum := head.Val
+	for head.Next != nil {
+		head = head.Next
+		if head.Val > lastNum {
+			root = replaceNode(root, head)
+		}
+		lastNum = head.Val
+	}
+	return root
+}
+
+func maxI(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func minI(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
+}
+
+// 辗转相除法
+func gcd(a, b int) int {
+	maxV, minV := maxI(a, b), minI(a, b)
+	for val := maxV % minV; val != 0; {
+		maxV = minV
+		minV = val
+		val = maxV % minV
+	}
+	return minV
+}
+
+func insertGreatestCommonDivisors(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+
+	root := head
+	for head.Next != nil {
+		if head.Val == 10 {
+			fmt.Println(head.Val)
+		}
+		temp := head.Next
+		gcdV := gcd(head.Val, temp.Val)
+		head.Next = &ListNode{
+			Val:  gcdV,
+			Next: temp,
+		}
+		head = temp
+	}
+	return root
+}
+
+func canSeePersonsCount(heights []int) []int {
+	if len(heights) <= 1 {
+		return []int{0}
+	}
+	ans := make([]int, len(heights))
+	maxH := make([]int, 0)
+	for i := len(heights) - 1; i >= 0; i-- {
+		for len(maxH) > 0 && maxH[len(maxH)-1] < heights[i] {
+			maxH = maxH[0 : len(maxH)-1]
+			ans[i] += 1
+		}
+		if len(maxH) > 0 {
+			ans[i]++
+		}
+		maxH = append(maxH, heights[i])
 	}
 	return ans
 }
