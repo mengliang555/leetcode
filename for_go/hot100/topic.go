@@ -1,6 +1,7 @@
 package hot100
 
 import (
+	"container/heap"
 	"fmt"
 	"sort"
 	"strings"
@@ -128,50 +129,33 @@ func maxArea(height []int) int {
 }
 
 func threeSum(nums []int) [][]int {
-	left, right := 0, len(nums)-1
 	ans := make([][]int, 0)
 	sort.Ints(nums)
-	for left < right-1 {
-		current := nums[left] + nums[right]
-		middle := (left + right) / 2
-		if current+nums[middle] >= 0 {
-			for middle > left && middle < right {
-				if current+nums[middle] == 0 {
-					ans = append(ans, []int{nums[left], nums[middle], nums[right]})
-					break
-				}
-				if middle-1 > left && nums[middle-1] == nums[middle] {
-					middle--
-					continue
-				}
-				middle--
-			}
-		} else {
-			for middle > left && middle < right {
-				if current+nums[middle] == 0 {
-					ans = append(ans, []int{nums[left], nums[middle], nums[right]})
-					break
-				}
-				if middle+1 < right && nums[middle+1] == nums[middle] {
-					middle++
-					continue
-				}
-				middle++
-			}
+	for i := 0; i < len(nums)-2; i++ {
+
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
 		}
 
-		if current > 0 {
-			for right-1 > left && nums[right-1] == nums[right] {
-				right -= 1
-			}
-			right -= 1
-		} else {
-			for left+1 < right && nums[left+1] == nums[left] {
-				left += 1
-			}
-			left += 1
-		}
+		k := len(nums) - 1
 
+		for j := i + 1; j < len(nums)-1; j++ {
+			if j > i+1 && nums[j] == nums[j-1] {
+				continue
+			}
+
+			for j < k && nums[i]+nums[j]+nums[k] > 0 {
+				k--
+			}
+
+			if j == k {
+				break
+			}
+
+			if nums[i]+nums[j]+nums[k] == 0 {
+				ans = append(ans, []int{nums[i], nums[j], nums[k]})
+			}
+		}
 	}
 	return ans
 }
@@ -293,6 +277,95 @@ func canSeePersonsCount(heights []int) []int {
 			ans[i]++
 		}
 		maxH = append(maxH, heights[i])
+	}
+	return ans
+}
+
+func minExtraChar(s string, dictionary []string) int {
+	d := make([]int, 0, len(s)) // d[i] 表示s前缀[0...i-1] 的额外字符长度
+	valM := make(map[string]struct{})
+	for _, v := range dictionary {
+		valM[v] = struct{}{}
+	}
+	for i := 1; i <= len(s); i++ {
+		d[i] = d[i-1] + 1
+		for j := i - 1; j >= 0; j-- {
+			if _, ok := valM[s[j:i]]; ok {
+				d[i] = min(d[i], d[j])
+			}
+		}
+	}
+	return d[len(s)]
+}
+
+func subarraySum(nums []int, k int) int {
+	totalC := 0
+	for i := range nums {
+		sum := 0
+		for j := i; j >= 0; j-- {
+			sum += nums[j]
+			if sum == k {
+				totalC++
+			}
+		}
+	}
+	return totalC
+}
+
+func subarraySumWithPrefix(nums []int, k int) int {
+	totalC := 0
+	prefixSum := map[int]int{0: 1} // 当前缀和[0:i]等于k的时候, 加1
+	sum := 0
+	for i := range nums {
+		sum += nums[i]
+		if val, ok := prefixSum[sum-k]; ok {
+			totalC += val
+		}
+		prefixSum[sum] = prefixSum[sum] + 1
+	}
+	return totalC
+}
+
+type hp struct {
+	sort.IntSlice
+}
+
+var a []int
+
+func (h *hp) Less(i, j int) bool { return a[h.IntSlice[i]] > a[h.IntSlice[j]] }
+func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() interface{} {
+	val := h.IntSlice
+	v := val[len(val)-1]
+	h.IntSlice = val[:len(val)-1]
+	return v
+}
+
+func maxSlidingWindow(nums []int, k int) []int {
+	a = nums
+
+	hpp := &hp{make([]int, k)}
+
+	for i := 0; i < k; i++ {
+		hpp.IntSlice[i] = i
+	}
+
+	heap.Init(hpp)
+
+	println(hpp.IntSlice[0])
+
+	ans := make([]int, 1, len(nums)-k+1)
+
+	ans[0] = nums[hpp.IntSlice[0]]
+
+	for i := k; i < len(nums); i++ {
+		heap.Push(hpp, i)
+
+		for hpp.IntSlice[0] <= i-k {
+			heap.Pop(hpp)
+		}
+
+		ans = append(ans, nums[hpp.IntSlice[0]])
 	}
 	return ans
 }

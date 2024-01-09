@@ -39,3 +39,7 @@ func Test_gcd(t *testing.T) {
 func Test_insertGreatestCommonDivisors(t *testing.T) {
 	PrintListNode(insertGreatestCommonDivisors(buildListNode([]int{18, 6, 10, 3})))
 }
+
+func Test_maxSlidingWindow(t *testing.T) {
+	fmt.Printf("%+v\n", maxSlidingWindow([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
+}
