@@ -3,6 +3,7 @@ package hot100
 import (
 	"container/heap"
 	"fmt"
+	"math"
 	"sort"
 	"strings"
 )
@@ -368,4 +369,245 @@ func maxSlidingWindow(nums []int, k int) []int {
 		ans = append(ans, nums[hpp.IntSlice[0]])
 	}
 	return ans
+}
+
+func minWindow(s string, t string) string {
+	ans := ""
+	if len(s) < len(t) {
+		return ans
+	}
+
+	containF := func(a, b map[uint8]int) bool {
+		for kb, vb := range b {
+			if va, ok := a[kb]; vb != 0 && !ok || (vb > va) {
+				return false
+			}
+		}
+		return true
+	}
+
+	charMap := make(map[uint8]int)
+	for i := range t {
+		charMap[t[i]]++
+	}
+
+	schMap := make(map[uint8]int)
+	var right, left int
+	for right < len(s) {
+		schMap[s[right]]++
+		right++
+		if containF(schMap, charMap) {
+			for left < right {
+				if containF(schMap, charMap) {
+					if len(ans) > right-left || ans == "" {
+						ans = s[left:right]
+					}
+				} else {
+					break
+				}
+				schMap[s[left]]--
+				left++
+			}
+		}
+	}
+
+	return ans
+}
+
+func minLength(s string) int {
+	a := make([]byte, 0)
+	for i := range []byte(s) {
+		if len(a) == 0 {
+			a = append(a, s[i])
+			continue
+		}
+		if s[i] == 'B' {
+			if a[len(a)-1] == 'A' {
+				a = a[:len(a)-1]
+				continue
+			}
+		} else if s[i] == 'D' {
+			if a[len(a)-1] == 'C' {
+				a = a[:len(a)-1]
+				continue
+			}
+		}
+		a = append(a, s[i])
+	}
+	return len(a)
+}
+
+// cbaebabacd
+// abc
+
+// j = 1  j+k-1
+func findAnagrams(s string, p string) []int {
+	ans := make([]int, 0)
+	k := len(p)
+
+	var kValSlice, pValSlice [26]int
+	for i, v := range p {
+		pValSlice[v-'a']++
+		kValSlice[s[i]-'a']++
+	}
+
+	if kValSlice == pValSlice {
+		ans = append(ans, 0)
+	}
+
+	for j := 1; j < len(s)-k+1; j++ {
+		kValSlice[s[j-1]-'a']--
+		kValSlice[s[j+k-1]-'a']++
+		if kValSlice == pValSlice {
+			ans = append(ans, j)
+		}
+	}
+
+	return ans
+}
+
+func maxSubArray(nums []int) int {
+	d := make([]int, len(nums))
+	for i := range nums {
+		if i == 0 {
+			d[i] = nums[i]
+			continue
+		}
+		if i == 0 || d[i-1] < 0 {
+			d[i] = nums[i]
+		} else {
+			d[i] = d[i-1] + nums[i]
+		}
+	}
+
+	maxC := math.MinInt
+	for _, v := range d {
+		if maxC < v {
+			maxC = v
+		}
+	}
+	return maxC
+
+}
+
+func addMinimum(word string) int {
+	count := 0
+	for i := 0; i < len(word)-1; i++ {
+		if word[i] <= word[i-1] {
+			count++
+		}
+	}
+
+	return count*3 - len(word)
+}
+
+type intDArray [][]int
+
+func (id intDArray) Len() int {
+	//TODO implement me
+	return len(id)
+}
+
+func (id intDArray) Less(i, j int) bool {
+	if id[i][0] < id[j][0] {
+		return true
+	} else if id[i][0] == id[j][0] {
+		return id[i][1] < id[j][1]
+	}
+	return false
+}
+
+func (id intDArray) Swap(i, j int) {
+	id[i], id[j] = id[j], id[i]
+}
+
+func merge(intervals [][]int) [][]int {
+	sort.Sort(intDArray(intervals))
+	ans := make([][]int, 0)
+
+	left, right := 0, 0
+	maxR := intervals[left][1]
+	for right < len(intervals) {
+		if left == right || maxR >= intervals[right][0] {
+			right++
+			continue
+		} else {
+			ans = append(ans, []int{intervals[left][0], max(intervals[left][1], intervals[right-1][1])})
+			left = right
+			maxR = intervals[left][1]
+			right++
+		}
+	}
+
+	ans = append(ans, []int{intervals[left][0], max(maxR, intervals[right-1][1])})
+
+	return ans
+}
+
+func countWords(words1 []string, words2 []string) int {
+	w1M := make(map[string]int)
+	for _, v := range words1 {
+		w1M[v]++
+		if w1M[v] > 1 {
+			delete(w1M, v)
+		}
+	}
+
+	for _, v := range words2 {
+		w1M[v]--
+	}
+
+	count := 0
+	for _, v := range w1M {
+		if v == 0 {
+			count++
+		}
+	}
+
+	return count
+}
+
+func repeatLimitedString(s string, repeatLimit int) string {
+	charCount := [26]int{}
+
+	for i := range s {
+		charCount[s[i]-'a']++
+	}
+
+	ans := strings.Builder{}
+
+	var m = 0
+	var i, j = 25, 25
+	// i 当前没有使用的最大地址，j指向当前未使用次打的
+	for i >= 0 {
+		if charCount[i] == 0 {
+			m = 0
+			i--
+			j = i
+		} else if m < repeatLimit {
+			charCount[s[i]-'a']++
+			i = j
+			m++
+		} else if m >= repeatLimit {
+			m = 0
+		}
+	}
+	return ans.String()
+
+}
+
+func deleteDuplicates(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+
+	root := head
+	for root.Next != nil {
+		if root.Next.Val == root.Val {
+			root.Next = root.Next.Next
+		} else {
+			root = root.Next
+		}
+	}
+	return head
 }

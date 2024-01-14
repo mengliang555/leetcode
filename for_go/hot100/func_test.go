@@ -43,3 +43,35 @@ func Test_insertGreatestCommonDivisors(t *testing.T) {
 func Test_maxSlidingWindow(t *testing.T) {
 	fmt.Printf("%+v\n", maxSlidingWindow([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
 }
+
+func Test_minWindow(t *testing.T) {
+	println(minWindow("ADOBECODEBANC", "ABC"))
+	println(minWindow("a", "a"))
+}
+
+func Test_minLength(t *testing.T) {
+	println(minLength("ABFCACDB"))
+	println(minLength("ACBBD"))
+}
+
+func Test_findAnagrams(t *testing.T) {
+	fmt.Printf("%+v\n", findAnagrams("cbaebabacd", "abc"))
+	fmt.Printf("%+v\n", findAnagrams("abab", "ab"))
+}
+
+func Test_maxSubArray(t *testing.T) {
+	println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
+}
+
+func Test_merge(t *testing.T) {
+	fmt.Printf("%+v\n", merge([][]int{{1, 3}, {2, 6}, {8, 10}, {15, 18}}))
+	fmt.Printf("%+v\n", merge([][]int{{1, 4}, {4, 5}}))
+	fmt.Printf("%+v\n", merge([][]int{{1, 4}, {0, 4}}))
+	fmt.Printf("%+v\n", merge([][]int{{1, 4}, {2, 3}}))
+	fmt.Printf("%+v\n", merge([][]int{{1, 4}, {0, 2}, {3, 5}}))
+}
+
+func Test_repeatLimitedString(t *testing.T) {
+	println(repeatLimitedString("cczazcc", 3))
+	println(repeatLimitedString("aababab", 2))
+}
