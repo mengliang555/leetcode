@@ -611,3 +611,9 @@ func deleteDuplicates(head *ListNode) *ListNode {
 	}
 	return head
 }
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
